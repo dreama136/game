@@ -100,9 +100,6 @@
             transition: transform 0.3s;
         }
         
-        .snake-part:nth-child(2) { background-color: #43a047; }
-        .snake-part:nth-child(3) { background-color: #388e3c; }
-        
         .snake-head {
             background: linear-gradient(135deg, #2E8B57, #4CAF50);
             border-radius: 50% 20% 20% 50%;
@@ -522,8 +519,6 @@
             
             <div class="snake-preview">
                 <div class="snake-part snake-head"></div>
-                <div class="snake-part"></div>
-                <div class="snake-part"></div>
                 <div class="food-preview"></div>
             </div>
             
@@ -631,12 +626,10 @@
         
         // 初始化游戏
         function initGame() {
-            // 重置游戏状态 - 初始蛇身3节
+            // 重置游戏状态 - 初始蛇身只有一节
             gameState = {
                 snake: [
-                    {x: 9, y: 10},  // 蛇尾
-                    {x: 10, y: 10}, // 蛇身
-                    {x: 11, y: 10}  // 蛇头
+                    {x: 10, y: 10}  // 蛇头
                 ],
                 food: generateFood(),
                 direction: "RIGHT",
@@ -751,7 +744,7 @@
                 return;
             }
             
-            // 检查是否撞到自己
+            // 检查是否撞到自己 (跳过蛇头)
             for (let i = 1; i < gameState.snake.length; i++) {
                 if (head.x === gameState.snake[i].x && head.y === gameState.snake[i].y) {
                     endGame();
@@ -772,7 +765,9 @@
                 gameState.food = generateFood();
             } else {
                 // 移除尾部（仅在未吃到食物时）
-                gameState.snake.pop();
+                if (gameState.snake.length > 1) {
+                    gameState.snake.pop();
+                }
             }
             
             // 渲染游戏
