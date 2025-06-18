@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>贪吃蛇小游戏 3.0</title>
+    <title>贪吃蛇小游戏 - 最终修复版</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -510,7 +510,7 @@
 <body>
     <div id="game-container">
         <div class="optimized-tag">
-            <i class="fas fa-mobile-alt"></i> 移动端优化版
+            <i class="fas fa-check-circle"></i> BUG修复版
         </div>
         
         <!-- 主界面 -->
@@ -610,7 +610,7 @@
             score: 0,
             gameInterval: null,
             isPaused: false,
-            gameStarted: false // 添加游戏是否已开始标志
+            gameStarted: false
         };
         
         // DOM元素
@@ -644,7 +644,7 @@
                 score: 0,
                 gameInterval: null,
                 isPaused: false,
-                gameStarted: false // 游戏尚未开始
+                gameStarted: false
             };
             
             // 更新分数显示
@@ -795,9 +795,11 @@
         
         // 结束游戏
         function endGame() {
-            clearInterval(gameState.gameInterval);
+            if (gameState.gameInterval) {
+                clearInterval(gameState.gameInterval);
+            }
             gameState.gameInterval = null;
-            gameState.gameStarted = false; // 游戏结束
+            gameState.gameStarted = false;
             
             // 显示最终得分
             finalScoreDisplay.textContent = gameState.score;
@@ -890,10 +892,7 @@
                     showScreen("game");
                     
                     // 确保游戏在倒计时结束后才开始
-                    setTimeout(() => {
-                        startGame();
-                    }, 100);
-                    
+                    startGame();
                     return;
                 }
             }, 1000);
