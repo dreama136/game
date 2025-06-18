@@ -609,7 +609,8 @@
             nextDirection: "RIGHT",
             score: 0,
             gameInterval: null,
-            isPaused: false
+            isPaused: false,
+            gameStarted: false // 添加游戏是否已开始标志
         };
         
         // DOM元素
@@ -642,7 +643,8 @@
                 nextDirection: "RIGHT",
                 score: 0,
                 gameInterval: null,
-                isPaused: false
+                isPaused: false,
+                gameStarted: false // 游戏尚未开始
             };
             
             // 更新分数显示
@@ -781,8 +783,11 @@
         function startGame() {
             if (gameState.gameInterval) return;
             
+            // 设置游戏已开始标志
+            gameState.gameStarted = true;
+            
             gameState.gameInterval = setInterval(() => {
-                if (!gameState.isPaused) {
+                if (!gameState.isPaused && gameState.gameStarted) {
                     moveSnake();
                 }
             }, GAME_SPEED);
@@ -792,6 +797,7 @@
         function endGame() {
             clearInterval(gameState.gameInterval);
             gameState.gameInterval = null;
+            gameState.gameStarted = false; // 游戏结束
             
             // 显示最终得分
             finalScoreDisplay.textContent = gameState.score;
@@ -882,7 +888,12 @@
                     clearInterval(countdownInterval);
                     countdownText.style.animation = "none";
                     showScreen("game");
-                    startGame();
+                    
+                    // 确保游戏在倒计时结束后才开始
+                    setTimeout(() => {
+                        startGame();
+                    }, 100);
+                    
                     return;
                 }
             }, 1000);
@@ -916,7 +927,7 @@
         
         // 暂停游戏（点击屏幕暂停）
         gameBoard.addEventListener("click", () => {
-            if (gameState.gameInterval && !gameOverScreen.classList.contains("active")) {
+            if (gameState.gameInterval && gameState.gameStarted && !gameOverScreen.classList.contains("active")) {
                 gameState.isPaused = !gameState.isPaused;
                 pauseOverlay.classList.toggle("active", gameState.isPaused);
             }
@@ -924,7 +935,7 @@
         
         // 键盘控制（桌面端）
         document.addEventListener("keydown", (e) => {
-            if (!gameState.gameInterval) return;
+            if (!gameState.gameInterval || !gameState.gameStarted) return;
             
             switch(e.key) {
                 case "ArrowUp":
@@ -949,8 +960,10 @@
                     break;
                 case " ":
                     // 空格键暂停
-                    gameState.isPaused = !gameState.isPaused;
-                    pauseOverlay.classList.toggle("active", gameState.isPaused);
+                    if (gameState.gameStarted) {
+                        gameState.isPaused = !gameState.isPaused;
+                        pauseOverlay.classList.toggle("active", gameState.isPaused);
+                    }
                     break;
             }
         });
@@ -962,13 +975,15 @@
         const DIRECTION_CHANGE_DELAY = 100; // 方向变化冷却时间
         
         gameBoard.addEventListener("touchstart", (e) => {
+            if (!gameState.gameStarted) return;
+            
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
             e.preventDefault();
         }, { passive: false });
         
         gameBoard.addEventListener("touchend", (e) => {
-            if (!gameState.gameInterval || gameState.isPaused) return;
+            if (!gameState.gameInterval || !gameState.gameStarted || gameState.isPaused) return;
             
             const touchEndX = e.changedTouches[0].clientX;
             const touchEndY = e.changedTouches[0].clientY;
