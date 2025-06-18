@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>贪吃蛇小游戏 2.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>贪吃蛇小游戏 3.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -11,6 +11,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            touch-action: manipulation;
         }
         
         body {
@@ -19,8 +20,9 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
             overflow: hidden;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
         
         #game-container {
@@ -36,11 +38,12 @@
         }
         
         .screen {
-            padding: 25px;
+            padding: 20px;
             display: none;
             flex-direction: column;
             align-items: center;
             min-height: 80vh;
+            width: 100%;
         }
         
         .screen.active {
@@ -61,12 +64,12 @@
         
         .game-title {
             text-align: center;
-            margin: 40px 0 30px;
+            margin: 30px 0 20px;
             text-shadow: 0 0 15px #00ff00;
         }
         
         .game-title h1 {
-            font-size: 3.8rem;
+            font-size: 3.5rem;
             color: #4CAF50;
             letter-spacing: 3px;
             margin-bottom: 10px;
@@ -75,7 +78,7 @@
         }
         
         .game-title p {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: #FFD700;
             opacity: 0.9;
         }
@@ -83,13 +86,13 @@
         .snake-preview {
             display: flex;
             justify-content: center;
-            margin: 30px 0;
+            margin: 25px 0;
             transform: rotate(-5deg);
         }
         
         .snake-part {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             background-color: #4CAF50;
             margin: 0 2px;
             border-radius: 6px;
@@ -99,7 +102,6 @@
         
         .snake-part:nth-child(2) { background-color: #43a047; }
         .snake-part:nth-child(3) { background-color: #388e3c; }
-        .snake-part:nth-child(4) { background-color: #2e7d32; }
         
         .snake-head {
             background: linear-gradient(135deg, #2E8B57, #4CAF50);
@@ -110,19 +112,19 @@
         }
         
         .food-preview {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             background: radial-gradient(circle at 30% 30%, #FF4500, #b32b00);
             border-radius: 50%;
-            margin: 0 15px;
-            box-shadow: 0 0 10px #ff4500;
+            margin: 0 12px;
+            box-shadow: 0 0 8px #ff4500;
             animation: pulse 1.5s infinite alternate;
             align-self: center;
         }
         
         @keyframes pulse {
             0% { transform: scale(1); }
-            100% { transform: scale(1.2); }
+            100% { transform: scale(1.1); }
         }
         
         .btn-container {
@@ -130,32 +132,32 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         
         .btn {
-            width: 80%;
-            padding: 18px;
-            margin: 15px 0;
+            width: 90%;
+            padding: 16px;
+            margin: 10px 0;
             border: none;
             border-radius: 50px;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             color: white;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
         }
         
         .btn:active {
             transform: translateY(3px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
         .btn::before {
@@ -188,10 +190,10 @@
         }
         
         .countdown-text {
-            font-size: 10rem;
+            font-size: 8rem;
             font-weight: bold;
             color: #FFD700;
-            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            text-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
             animation: pulse 1s infinite;
         }
         
@@ -200,6 +202,7 @@
             background: #0f3460;
             justify-content: flex-start;
             position: relative;
+            padding: 15px;
         }
         
         .game-header {
@@ -207,32 +210,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 12px 15px;
             background: rgba(0, 40, 85, 0.7);
-            border-radius: 15px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
         
         .score-display {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             color: #FFD700;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         
         #game-board {
             width: 100%;
-            height: 65vh;
+            height: 60vh;
             max-height: 500px;
             background-color: #0a192f;
-            border: 3px solid #4CAF50;
-            border-radius: 15px;
+            border: 2px solid #4CAF50;
+            border-radius: 12px;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
             display: grid;
             grid-template-columns: repeat(20, 1fr);
             grid-template-rows: repeat(20, 1fr);
@@ -241,64 +244,93 @@
         .snake-segment {
             background-color: #4CAF50;
             border-radius: 4px;
-            box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
         }
         
         .snake-head {
             background: radial-gradient(circle at 30% 30%, #4CAF50, #2E8B57);
             border-radius: 35% 15% 15% 35%;
-            box-shadow: 0 0 8px rgba(76, 175, 80, 0.7);
+            box-shadow: 0 0 6px rgba(76, 175, 80, 0.7);
             z-index: 2;
         }
         
         .food {
             background: radial-gradient(circle at 30% 30%, #FF4500, #cc3700);
             border-radius: 50%;
-            box-shadow: 0 0 12px #ff4500;
+            box-shadow: 0 0 10px #ff4500;
             animation: foodPulse 1.5s infinite alternate;
             z-index: 1;
         }
         
         @keyframes foodPulse {
-            0% { transform: scale(1); box-shadow: 0 0 10px #ff4500; }
-            100% { transform: scale(1.1); box-shadow: 0 0 20px #ff4500; }
+            0% { transform: scale(1); box-shadow: 0 0 8px #ff4500; }
+            100% { transform: scale(1.1); box-shadow: 0 0 15px #ff4500; }
         }
         
         .controls-info {
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: center;
             color: #aaa;
-            font-size: 1.1rem;
+            font-size: 1rem;
             padding: 10px;
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
+            border-radius: 8px;
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
         
         .controls-info i {
             color: #4CAF50;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
+        }
+        
+        /* 暂停覆盖层 */
+        #pause-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            color: white;
+            font-size: 2rem;
+            text-align: center;
+        }
+        
+        #pause-overlay.active {
+            display: flex;
+        }
+        
+        #pause-overlay i {
+            font-size: 3rem;
+            color: #FFD700;
+            margin-bottom: 15px;
         }
         
         /* 记录界面样式 */
         .records-screen {
             background: #1a1a2e;
             justify-content: flex-start;
+            padding: 15px;
         }
         
         .records-header {
-            font-size: 2.8rem;
+            font-size: 2.3rem;
             color: #FFD700;
-            margin: 25px 0;
+            margin: 20px 0;
             text-align: center;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
             font-weight: 700;
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border-bottom: 2px solid #4CAF50;
         }
         
@@ -307,9 +339,9 @@
             max-height: 55vh;
             overflow-y: auto;
             background: rgba(10, 25, 47, 0.6);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
             border: 1px solid #4CAF50;
         }
         
@@ -317,10 +349,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 20px;
-            margin: 12px 0;
+            padding: 15px;
+            margin: 10px 0;
             background: rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
+            border-radius: 10px;
             transition: all 0.3s ease;
             border-left: 4px solid #4CAF50;
         }
@@ -335,38 +367,38 @@
         }
         
         .record-rank {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: bold;
             color: #4CAF50;
-            min-width: 40px;
+            min-width: 35px;
         }
         
         .record-details {
             flex-grow: 1;
-            padding: 0 15px;
+            padding: 0 12px;
         }
         
         .record-score {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: bold;
             color: #FFD700;
         }
         
         .record-date {
             color: #aaa;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
         }
         
         .no-records {
             text-align: center;
-            padding: 40px;
+            padding: 30px;
             color: #777;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
         }
         
         .btn-back {
             background: linear-gradient(90deg, #E94560, #B21F1F);
-            width: 70%;
+            width: 80%;
             margin-top: 10px;
         }
         
@@ -383,7 +415,7 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
         }
         
@@ -392,46 +424,47 @@
         }
         
         .game-over h2 {
-            font-size: 3.5rem;
+            font-size: 2.8rem;
             color: #FF4500;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(255, 69, 0, 0.8);
+            margin-bottom: 15px;
+            text-shadow: 0 0 12px rgba(255, 69, 0, 0.8);
             animation: gameOverText 1.5s infinite alternate;
         }
         
         @keyframes gameOverText {
-            0% { transform: scale(1); text-shadow: 0 0 10px #ff4500; }
-            100% { transform: scale(1.05); text-shadow: 0 0 20px #ff4500, 0 0 30px #ff4500; }
+            0% { transform: scale(1); text-shadow: 0 0 8px #ff4500; }
+            100% { transform: scale(1.03); text-shadow: 0 0 15px #ff4500, 0 0 25px #ff4500; }
         }
         
         .final-score {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #FFD700;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             font-weight: bold;
         }
         
         .btn-container-game-over {
             display: flex;
             flex-direction: column;
-            width: 80%;
-            max-width: 300px;
+            width: 90%;
+            max-width: 280px;
         }
         
-        /* 修复提示 */
-        .bug-fixed {
+        /* 优化提示 */
+        .optimized-tag {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: rgba(76, 175, 80, 0.2);
-            padding: 10px 15px;
-            border-radius: 30px;
-            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             color: #4CAF50;
             border: 1px solid #4CAF50;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            z-index: 10;
         }
         
         /* 响应式设计 */
@@ -441,28 +474,43 @@
             }
             
             .btn {
-                font-size: 1.2rem;
-                padding: 16px;
+                font-size: 1.1rem;
+                padding: 14px;
             }
             
             .game-header {
-                padding: 12px 15px;
+                padding: 10px 12px;
+                font-size: 0.9rem;
             }
             
             .countdown-text {
-                font-size: 8rem;
+                font-size: 6rem;
             }
             
             .records-header {
-                font-size: 2.3rem;
+                font-size: 2rem;
+            }
+            
+            #game-board {
+                height: 55vh;
+            }
+        }
+        
+        @media (max-height: 700px) {
+            .screen {
+                min-height: 85vh;
+            }
+            
+            #game-board {
+                height: 50vh;
             }
         }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <div class="bug-fixed">
-            <i class="fas fa-bug"></i> Bug修复版
+        <div class="optimized-tag">
+            <i class="fas fa-mobile-alt"></i> 移动端优化版
         </div>
         
         <!-- 主界面 -->
@@ -477,8 +525,6 @@
                 <div class="snake-part"></div>
                 <div class="snake-part"></div>
                 <div class="food-preview"></div>
-                <div class="snake-part"></div>
-                <div class="snake-part"></div>
             </div>
             
             <div class="btn-container">
@@ -509,9 +555,17 @@
             
             <div class="controls-info">
                 <i class="fas fa-hand-point-up"></i> 滑动屏幕控制方向 
-                <i class="fas fa-space-shuttle"></i> 点击空格暂停
+                <i class="fas fa-hand-pointer"></i> 点击屏幕暂停
             </div>
             
+            <!-- 暂停覆盖层 -->
+            <div id="pause-overlay">
+                <i class="fas fa-pause"></i>
+                <div>游戏已暂停</div>
+                <div style="font-size:1.2rem; margin-top:15px;">点击继续</div>
+            </div>
+            
+            <!-- 游戏结束弹窗 -->
             <div id="game-over" class="game-over">
                 <h2>游戏结束!</h2>
                 <div class="final-score">最终得分: <span id="final-score">0</span></div>
@@ -549,7 +603,7 @@
         
         // 游戏状态
         let gameState = {
-            snake: [{x: 10, y: 10}],
+            snake: [],
             food: {x: 15, y: 15},
             direction: "RIGHT",
             nextDirection: "RIGHT",
@@ -571,13 +625,18 @@
         const finalScoreDisplay = document.getElementById("final-score");
         const recordsContainer = document.getElementById("records-container");
         const gameOverScreen = document.getElementById("game-over");
+        const pauseOverlay = document.getElementById("pause-overlay");
         const countdownText = document.getElementById("countdown-text");
         
         // 初始化游戏
         function initGame() {
-            // 重置游戏状态
+            // 重置游戏状态 - 初始蛇身3节
             gameState = {
-                snake: [{x: 10, y: 10}],
+                snake: [
+                    {x: 9, y: 10},  // 蛇尾
+                    {x: 10, y: 10}, // 蛇身
+                    {x: 11, y: 10}  // 蛇头
+                ],
                 food: generateFood(),
                 direction: "RIGHT",
                 nextDirection: "RIGHT",
@@ -591,6 +650,10 @@
             
             // 清空游戏板
             gameBoard.innerHTML = "";
+            
+            // 隐藏暂停和结束界面
+            pauseOverlay.classList.remove("active");
+            gameOverScreen.classList.remove("active");
             
             // 渲染初始蛇和食物
             renderGame();
@@ -687,7 +750,7 @@
             }
             
             // 检查是否撞到自己
-            for (let i = 0; i < gameState.snake.length; i++) {
+            for (let i = 1; i < gameState.snake.length; i++) {
                 if (head.x === gameState.snake[i].x && head.y === gameState.snake[i].y) {
                     endGame();
                     return;
@@ -851,7 +914,15 @@
             showScreen("main");
         });
         
-        // 键盘控制
+        // 暂停游戏（点击屏幕暂停）
+        gameBoard.addEventListener("click", () => {
+            if (gameState.gameInterval && !gameOverScreen.classList.contains("active")) {
+                gameState.isPaused = !gameState.isPaused;
+                pauseOverlay.classList.toggle("active", gameState.isPaused);
+            }
+        });
+        
+        // 键盘控制（桌面端）
         document.addEventListener("keydown", (e) => {
             if (!gameState.gameInterval) return;
             
@@ -879,6 +950,7 @@
                 case " ":
                     // 空格键暂停
                     gameState.isPaused = !gameState.isPaused;
+                    pauseOverlay.classList.toggle("active", gameState.isPaused);
                     break;
             }
         });
@@ -887,7 +959,7 @@
         let touchStartX = 0;
         let touchStartY = 0;
         let lastDirectionChange = 0;
-        const DIRECTION_CHANGE_DELAY = 100; // 限制方向变化频率
+        const DIRECTION_CHANGE_DELAY = 100; // 方向变化冷却时间
         
         gameBoard.addEventListener("touchstart", (e) => {
             touchStartX = e.touches[0].clientX;
@@ -895,12 +967,8 @@
             e.preventDefault();
         }, { passive: false });
         
-        gameBoard.addEventListener("touchmove", (e) => {
-            e.preventDefault();
-        }, { passive: false });
-        
         gameBoard.addEventListener("touchend", (e) => {
-            if (!gameState.gameInterval) return;
+            if (!gameState.gameInterval || gameState.isPaused) return;
             
             const touchEndX = e.changedTouches[0].clientX;
             const touchEndY = e.changedTouches[0].clientY;
