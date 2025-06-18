@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>贪吃蛇小游戏</title>
+    <title>贪吃蛇小游戏 2.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
@@ -25,13 +26,13 @@
         #game-container {
             width: 100%;
             max-width: 500px;
-            background-color: rgba(0, 0, 0, 0.85);
-            border-radius: 25px;
+            background: rgba(10, 20, 30, 0.95);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
             position: relative;
             color: white;
-            border: 2px solid #4CAF50;
+            border: 3px solid #4CAF50;
         }
         
         .screen {
@@ -50,18 +51,18 @@
         .main-screen {
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231a1a2e"/><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="none" stroke="%234a154b" stroke-width="2"/><circle cx="50" cy="50" r="30" fill="none" stroke="%232e8b57" stroke-width="2"/><circle cx="50" cy="50" r="10" fill="%23e94560"/></svg>') center/cover;
             justify-content: space-between;
+            animation: bg-pulse 8s infinite alternate;
+        }
+        
+        @keyframes bg-pulse {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
         }
         
         .game-title {
             text-align: center;
             margin: 40px 0 30px;
             text-shadow: 0 0 15px #00ff00;
-            animation: titleGlow 2s infinite alternate;
-        }
-        
-        @keyframes titleGlow {
-            0% { text-shadow: 0 0 10px #00ff00; }
-            100% { text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
         }
         
         .game-title h1 {
@@ -70,6 +71,7 @@
             letter-spacing: 3px;
             margin-bottom: 10px;
             font-weight: 700;
+            text-transform: uppercase;
         }
         
         .game-title p {
@@ -133,7 +135,7 @@
         
         .btn {
             width: 80%;
-            padding: 20px;
+            padding: 18px;
             margin: 15px 0;
             border: none;
             border-radius: 50px;
@@ -145,6 +147,10 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .btn:active {
@@ -193,6 +199,7 @@
         .game-screen {
             background: #0f3460;
             justify-content: flex-start;
+            position: relative;
         }
         
         .game-header {
@@ -211,6 +218,9 @@
             font-size: 1.6rem;
             color: #FFD700;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         #game-board {
@@ -223,46 +233,30 @@
             position: relative;
             overflow: hidden;
             box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
-        }
-        
-        .grid-line {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .grid-line.horizontal {
-            width: 100%;
-            height: 1px;
-            left: 0;
-        }
-        
-        .grid-line.vertical {
-            height: 100%;
-            width: 1px;
-            top: 0;
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            grid-template-rows: repeat(20, 1fr);
         }
         
         .snake-segment {
-            position: absolute;
-            border-radius: 5px;
-            z-index: 10;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            background-color: #4CAF50;
+            border-radius: 4px;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
         }
         
         .snake-head {
             background: radial-gradient(circle at 30% 30%, #4CAF50, #2E8B57);
             border-radius: 35% 15% 15% 35%;
-            z-index: 20;
-            box-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.7);
+            z-index: 2;
         }
         
         .food {
-            position: absolute;
-            border-radius: 50%;
-            z-index: 5;
             background: radial-gradient(circle at 30% 30%, #FF4500, #cc3700);
-            box-shadow: 0 0 15px #ff4500;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #ff4500;
             animation: foodPulse 1.5s infinite alternate;
+            z-index: 1;
         }
         
         @keyframes foodPulse {
@@ -279,6 +273,15 @@
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .controls-info i {
+            color: #4CAF50;
+            font-size: 1.3rem;
         }
         
         /* 记录界面样式 */
@@ -415,6 +418,22 @@
             max-width: 300px;
         }
         
+        /* 修复提示 */
+        .bug-fixed {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(76, 175, 80, 0.2);
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
         /* 响应式设计 */
         @media (max-width: 500px) {
             .game-title h1 {
@@ -423,11 +442,11 @@
             
             .btn {
                 font-size: 1.2rem;
-                padding: 18px;
+                padding: 16px;
             }
             
-            #game-board {
-                height: 55vh;
+            .game-header {
+                padding: 12px 15px;
             }
             
             .countdown-text {
@@ -438,19 +457,14 @@
                 font-size: 2.3rem;
             }
         }
-        
-        /* iPhone X+ 适配 */
-        @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3),
-               only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2),
-               only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
-            .screen {
-                min-height: 85vh;
-            }
-        }
     </style>
 </head>
 <body>
     <div id="game-container">
+        <div class="bug-fixed">
+            <i class="fas fa-bug"></i> Bug修复版
+        </div>
+        
         <!-- 主界面 -->
         <div id="main-screen" class="screen active">
             <div class="game-title">
@@ -468,8 +482,12 @@
             </div>
             
             <div class="btn-container">
-                <button id="start-btn" class="btn btn-start">开始游戏</button>
-                <button id="records-btn" class="btn btn-record">游戏记录</button>
+                <button id="start-btn" class="btn btn-start">
+                    <i class="fas fa-play"></i> 开始游戏
+                </button>
+                <button id="records-btn" class="btn btn-record">
+                    <i class="fas fa-trophy"></i> 游戏记录
+                </button>
             </div>
         </div>
         
@@ -481,22 +499,29 @@
         <!-- 游戏界面 -->
         <div id="game-screen" class="screen game-screen">
             <div class="game-header">
-                <div class="score-display">得分: <span id="score">0</span></div>
+                <div class="score-display">
+                    <i class="fas fa-star"></i> 得分: <span id="score">0</span>
+                </div>
                 <div style="font-weight:bold; color:#4CAF50;">贪吃蛇</div>
             </div>
             
             <div id="game-board"></div>
             
             <div class="controls-info">
-                滑动屏幕控制方向 | 点击空格暂停
+                <i class="fas fa-hand-point-up"></i> 滑动屏幕控制方向 
+                <i class="fas fa-space-shuttle"></i> 点击空格暂停
             </div>
             
             <div id="game-over" class="game-over">
                 <h2>游戏结束!</h2>
                 <div class="final-score">最终得分: <span id="final-score">0</span></div>
                 <div class="btn-container-game-over">
-                    <button id="restart-btn" class="btn btn-start">再来一局</button>
-                    <button id="back-to-main" class="btn btn-back">返回主菜单</button>
+                    <button id="restart-btn" class="btn btn-start">
+                        <i class="fas fa-redo"></i> 再来一局
+                    </button>
+                    <button id="back-to-main" class="btn btn-back">
+                        <i class="fas fa-home"></i> 返回主菜单
+                    </button>
                 </div>
             </div>
         </div>
@@ -507,17 +532,17 @@
             
             <div id="records-container" class="records-container">
                 <div class="no-records">暂无游戏记录</div>
-                <!-- 记录将通过JS动态添加 -->
             </div>
             
-            <button id="back-btn" class="btn btn-back">返回主菜单</button>
+            <button id="back-btn" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i> 返回主菜单
+            </button>
         </div>
     </div>
 
     <script>
         // 游戏常量
         const GRID_SIZE = 20;
-        const CELL_SIZE = Math.min(window.innerWidth * 0.9 / GRID_SIZE, window.innerHeight * 0.5 / GRID_SIZE);
         const GAME_SPEED = 150;
         const MAX_RECORDS = 10;
         const STORAGE_KEY = "snake_game_records";
@@ -567,31 +592,8 @@
             // 清空游戏板
             gameBoard.innerHTML = "";
             
-            // 绘制网格
-            drawGrid();
-            
             // 渲染初始蛇和食物
-            renderSnake();
-            renderFood();
-        }
-        
-        // 绘制网格
-        function drawGrid() {
-            // 添加水平网格线
-            for (let y = 0; y <= GRID_SIZE; y++) {
-                const line = document.createElement("div");
-                line.className = "grid-line horizontal";
-                line.style.top = `${y * CELL_SIZE}px`;
-                gameBoard.appendChild(line);
-            }
-            
-            // 添加垂直网格线
-            for (let x = 0; x <= GRID_SIZE; x++) {
-                const line = document.createElement("div");
-                line.className = "grid-line vertical";
-                line.style.left = `${x * CELL_SIZE}px`;
-                gameBoard.appendChild(line);
-            }
+            renderGame();
         }
         
         // 生成食物
@@ -618,18 +620,19 @@
             return newFood;
         }
         
-        // 渲染蛇
-        function renderSnake() {
-            // 创建新的蛇元素
+        // 渲染游戏
+        function renderGame() {
+            // 清空游戏板
+            gameBoard.innerHTML = "";
+            
+            // 渲染蛇
             gameState.snake.forEach((segment, index) => {
                 const snakeSegment = document.createElement("div");
                 snakeSegment.classList.add("snake-segment");
                 if (index === 0) snakeSegment.classList.add("snake-head");
                 
-                snakeSegment.style.width = `${CELL_SIZE}px`;
-                snakeSegment.style.height = `${CELL_SIZE}px`;
-                snakeSegment.style.left = `${segment.x * CELL_SIZE}px`;
-                snakeSegment.style.top = `${segment.y * CELL_SIZE}px`;
+                snakeSegment.style.gridColumn = segment.x + 1;
+                snakeSegment.style.gridRow = segment.y + 1;
                 
                 // 根据方向旋转蛇头
                 if (index === 0) {
@@ -645,18 +648,12 @@
                 
                 gameBoard.appendChild(snakeSegment);
             });
-        }
-        
-        // 渲染食物
-        function renderFood() {
-            // 创建新的食物
+            
+            // 渲染食物
             const food = document.createElement("div");
             food.classList.add("food");
-            food.style.width = `${CELL_SIZE}px`;
-            food.style.height = `${CELL_SIZE}px`;
-            food.style.left = `${gameState.food.x * CELL_SIZE}px`;
-            food.style.top = `${gameState.food.y * CELL_SIZE}px`;
-            
+            food.style.gridColumn = gameState.food.x + 1;
+            food.style.gridRow = gameState.food.y + 1;
             gameBoard.appendChild(food);
         }
         
@@ -708,14 +705,13 @@
                 
                 // 生成新食物
                 gameState.food = generateFood();
-                renderFood();
             } else {
-                // 移除尾部
+                // 移除尾部（仅在未吃到食物时）
                 gameState.snake.pop();
             }
             
-            // 渲染蛇
-            renderSnake();
+            // 渲染游戏
+            renderGame();
         }
         
         // 开始游戏
@@ -887,18 +883,20 @@
             }
         });
         
-        // 触摸控制（移动端）
+        // 触摸控制（移动端） - 修复滑动不丝滑的问题
         let touchStartX = 0;
         let touchStartY = 0;
+        let lastDirectionChange = 0;
+        const DIRECTION_CHANGE_DELAY = 100; // 限制方向变化频率
         
         gameBoard.addEventListener("touchstart", (e) => {
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
-            e.preventDefault(); // 防止滚动
+            e.preventDefault();
         }, { passive: false });
         
         gameBoard.addEventListener("touchmove", (e) => {
-            e.preventDefault(); // 防止滚动
+            e.preventDefault();
         }, { passive: false });
         
         gameBoard.addEventListener("touchend", (e) => {
@@ -910,8 +908,13 @@
             const diffX = touchEndX - touchStartX;
             const diffY = touchEndY - touchStartY;
             
+            // 确保有足够的时间间隔才允许改变方向
+            const now = Date.now();
+            if (now - lastDirectionChange < DIRECTION_CHANGE_DELAY) return;
+            lastDirectionChange = now;
+            
             // 确定滑动方向（只处理足够大的滑动）
-            if (Math.abs(diffX) > 20 || Math.abs(diffY) > 20) {
+            if (Math.abs(diffX) > 10 || Math.abs(diffY) > 10) {
                 if (Math.abs(diffX) > Math.abs(diffY)) {
                     // 水平滑动
                     if (diffX > 0 && gameState.direction !== "LEFT") {
